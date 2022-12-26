@@ -5,13 +5,13 @@ else:
     from ExprParser import ExprParser
     from ExprVisitor import ExprVisitor
 
-
 class Visitor(ExprVisitor):
 
     def __init__(self):
         self.nivell = 0
-        self.variables = [{}] # Stack of dictionaries
+        self.variables = [] # Stack of dictionaries
         self.func_dict = {}
+        self.global_i = 0
         # self.contextStack = []
     
     def visitRoot(self, ctx:ExprParser.RootContext):
@@ -22,7 +22,6 @@ class Visitor(ExprVisitor):
     # Visit a parse tree produced by ExprParser#DeclareFunction.
     def visitDeclareFunction(self, ctx:ExprParser.DeclareFunctionContext):
         print("## visitDeclareFunction")
-
         l = list(ctx.getChildren())
         functionName = l[0].getText()
         parametersList = []
@@ -31,7 +30,9 @@ class Visitor(ExprVisitor):
             parametersList.append(l[i].getText())
             i += 1
         
-        instrucBloc = l[i]
+        instrucBlock = l[i+1]
+
+        #print("instrucBlock: {}".format(instrucBlock.getText()))
 
         if functionName in self.func_dict:
             errorMsg = "Procedure with name '{}' already defined"
@@ -42,24 +43,38 @@ class Visitor(ExprVisitor):
             errorMsg = "Some parameters in function '{}' have the same name"
             raise Exception(errorMsg.format(functionName))
 
-        self.func_dict[functionName] = (parametersList, instrucBloc)
+        self.func_dict[functionName] = (parametersList, instrucBlock)
+        
+        # print("Function '{}' declared with parameters {}".format(functionName, parametersList))
 
     # Visit a parse tree produced by ExprParser#block.
     def visitBlock(self, ctx:ExprParser.BlockContext):
         """Visit a block of instructions. Stop when a value is returned."""
         print("## visitBlock")
+
+        self.global_i += 1
+        #print("Block {}: {}".format(self.global_i, ctx.getText()))
         l = list(ctx.getChildren())
-        for instruc in l:
-            value = self.visit(instruc)
-            if value is not None:
-                return value
+        ret = None
+        i = 0
+        n = len(l)
+        while i < n and ret is None:
+            #print("Block {}: instruction {}, code: {}".format(self.global_i, i, l[i].getText()))
+            ret = self.visit(l[i])
+            i += 1
+        #print("FINISHED Block {}: returning {}".format(self.global_i, ret))
+        self.global_i -= 1
+        return ret
 
 
     # Visit a parse tree produced by ExprParser#write.
     def visitWrite(self, ctx:ExprParser.WriteContext):
         print("## visitWrite")
         l = list(ctx.getChildren())
-        return self.visit(l[0])
+        ret = self.visit(l[0])
+        #print("Write: {}".format(ret))
+        if ret is not None:
+            return ret
     
     # Visit a parse tree produced by ExprParser#assignation.
     def visitAssignation(self, ctx:ExprParser.AssignationContext):
@@ -75,17 +90,23 @@ class Visitor(ExprVisitor):
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         if condition:
-            self.visit(l[3])
+            return self.visit(l[3])
 
     # Visit a parse tree produced by ExprParser#ifElse.
     def visitIfElse(self, ctx:ExprParser.IfElseContext):
         print("## visitIfElse")
         l = list(ctx.getChildren())
+        #print("Checking if {} is true".format(l[1].getText()))
         condition = self.visit(l[1])
         if condition:
-            self.visit(l[3])
+            #print("Condition is true, visiting {}".format(l[3].getText()))
+            ret = self.visit(l[3])
         else:
-            self.visit(l[5])
+            #print("Condition is false, visiting {}".format(l[7].getText()))
+            ret = self.visit(l[7])
+        
+        if ret is not None:
+            return ret
     
     # Visit a parse tree produced by ExprParser#while.
     def visitWhile(self, ctx:ExprParser.WhileContext):
@@ -93,8 +114,11 @@ class Visitor(ExprVisitor):
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         while condition:
-            self.visit(l[3])
+            ret = self.visit(l[3])
+            if ret is not None:
+                return ret
             condition = self.visit(l[1])
+        return
 
     # Visit a parse tree produced by ExprParser#lessExpr.
     def visitLessExpr(self, ctx:ExprParser.LessExprContext):
@@ -103,10 +127,11 @@ class Visitor(ExprVisitor):
         if len(l) == 3:
             a = self.visit(l[0])
             b = self.visit(l[2])
+            #print("Checking if {} < {}".format(a, b))
             return a < b
         else:
-            print("Error evaluating less expression!")
-            return False
+            error_mg =  "Error evaluating less expression!"
+            raise Exception(error_mg)
     
     # Visit a parse tree produced by ExprParser#greaterEqualExpr.
     def visitGreaterEqualExpr(self, ctx:ExprParser.GreaterEqualExprContext):
@@ -148,9 +173,12 @@ class Visitor(ExprVisitor):
     def visitVarExpr(self, ctx:ExprParser.VarExprContext):
         print("## visitVarExpr")
         varName = ctx.getText()
-        if varName in self.variables:
+        if varName in self.variables[-1]:
+            #print("Returning value of variable {}".format(varName))
             return self.variables[-1][varName]
         else:
+            #print("All current variables: {}".format(self.variables))
+            #print("Current variables: {}".format(self.variables[-1]))
             errorMsg = "Error, variable {} not defined!"
             raise Exception(errorMsg.format(varName))
     
@@ -178,8 +206,18 @@ class Visitor(ExprVisitor):
             sumVar = a+b
         else:
             print("Error evaluating sum expression!")
-        # print("sum",sumVar)
+        #print("sum",sumVar)
         return sumVar
+
+    # Visit a parse tree produced by ExprParser#parenthesizedExpr.
+    def visitParenthesizedExpr(self, ctx:ExprParser.ParenthesizedExprContext):
+        # print("visitParenthesizedExpr")
+        l = list(ctx.getChildren())
+        #print("length Parent expr:",len(l))
+        if len(l) == 3:
+            return self.visit(l[1])
+        else:
+            print("Error in parenthesized expression")
     
     # Visit a parse tree produced by ExprParser#functionCall.
     def visitFunctionCall(self, ctx:ExprParser.FunctionCallContext):
@@ -187,12 +225,15 @@ class Visitor(ExprVisitor):
 
         l = list(ctx.getChildren())
         functionName = l[0].getText()
+        #print("functionName", functionName)
 
         # Visit the parameters according to the function definition
         parametersList = []
         param_count = len(self.func_dict[functionName][0])
         for i in range(1, 1+param_count):
             parametersList.append(self.visit(l[i]))
+        
+        #print("parametersList", parametersList)
 
         if functionName not in self.func_dict:
             errorMsg = "Procedure with name '{}' not defined"
@@ -204,7 +245,8 @@ class Visitor(ExprVisitor):
             errorMsg = "Some parameters in function '{}' have the same name"
             raise Exception(errorMsg.format(functionName))
         
-        parametersList, instrucBloc = self.func_dict[functionName]
+        parametersList, instrucBlock = self.func_dict[functionName]
+
         if not(len(parametersList) == len(parametersSet)):
             errorMsg = "Some parameters in function '{}' have the same name"
             raise Exception(errorMsg.format(functionName))
@@ -213,12 +255,17 @@ class Visitor(ExprVisitor):
         values = list(parametersSet)
         for i in range(param_count):
             d[parametersList[i]] = values[i]
-        
+
+        # add the new variables to the stack
         self.variables.append(d)
-
-        ret = self.visit(instrucBloc)
-
+        
+        #print("Entering function call block...")
+        ret = self.visit(instrucBlock)
+        #print("Exit function call block...")
+        # remove the variables from the stack
         self.variables.pop()
+
+        #print("Returning function call): {}".format(ret))
 
         return ret
     
