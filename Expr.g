@@ -1,18 +1,19 @@
 grammar Expr;
 root : declareFunction* expr? EOF ;
 
-declareFunction : ID_FUNCTION ID* '{' instruc* '}' ;
+declareFunction : ID_FUNCTION ID* '{' block '}' ;
 
 block : instruc+ ;
 
-instruc : ID assign expr # assignation
-    | expr # write
-    | 'if' expr '{' block  '}' # if
+instruc : expr # write
+    | ID assign expr # assignation
+    | 'if' expr '{' block '}' # if
     | 'if' expr '{' block '}' 'else' '{' block '}' # ifElse
     | 'while' expr '{' block '}' # while
     ;
 
-expr : ID_FUNCTION expr* # functionCall
+expr : '(' expr ')'     # parenthesizedExpr
+    | ID_FUNCTION expr* # functionCall
     | expr EQ expr      # equalExpr
     | expr NEQ expr     # differentExpr
     | expr LT expr      # lessExpr
