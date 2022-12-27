@@ -15,13 +15,13 @@ class Visitor(ExprVisitor):
         # self.contextStack = []
     
     def visitRoot(self, ctx:ExprParser.RootContext):
-        print("## visitRoot")
+        #print("## visitRoot")
         l = list(ctx.getChildren())
         return self.visit(l[0])
 
     # Visit a parse tree produced by ExprParser#DeclareFunction.
     def visitDeclareFunction(self, ctx:ExprParser.DeclareFunctionContext):
-        print("## visitDeclareFunction")
+        #print("## visitDeclareFunction")
         l = list(ctx.getChildren())
         functionName = l[0].getText()
         parametersList = []
@@ -50,7 +50,7 @@ class Visitor(ExprVisitor):
     # Visit a parse tree produced by ExprParser#block.
     def visitBlock(self, ctx:ExprParser.BlockContext):
         """Visit a block of instructions. Stop when a value is returned."""
-        print("## visitBlock")
+        #print("## visitBlock")
 
         self.global_i += 1
         #print("Block {}: {}".format(self.global_i, ctx.getText()))
@@ -69,7 +69,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#write.
     def visitWrite(self, ctx:ExprParser.WriteContext):
-        print("## visitWrite")
+        #print("## visitWrite")
         l = list(ctx.getChildren())
         ret = self.visit(l[0])
         #print("Write: {}".format(ret))
@@ -78,7 +78,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#assignation.
     def visitAssignation(self, ctx:ExprParser.AssignationContext):
-        print("## visitAssignation")
+        #print("## visitAssignation")
         l = list(ctx.getChildren())
         varName = l[0].getText()
         varValue = self.visit(l[2])
@@ -86,7 +86,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#if.
     def visitIf(self, ctx:ExprParser.IfContext):
-        print("## visitIf")
+        #print("## visitIf")
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         if condition:
@@ -94,7 +94,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#ifElse.
     def visitIfElse(self, ctx:ExprParser.IfElseContext):
-        print("## visitIfElse")
+        #print("## visitIfElse")
         l = list(ctx.getChildren())
         #print("Checking if {} is true".format(l[1].getText()))
         condition = self.visit(l[1])
@@ -110,7 +110,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#while.
     def visitWhile(self, ctx:ExprParser.WhileContext):
-        print("## visitWhile")
+        #print("## visitWhile")
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         while condition:
@@ -122,7 +122,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#lessExpr.
     def visitLessExpr(self, ctx:ExprParser.LessExprContext):
-        print("## visitLessExpr")
+        #print("## visitLessExpr")
         l = list(ctx.getChildren())
         if len(l) == 3:
             a = self.visit(l[0])
@@ -147,7 +147,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#differentExpr.
     def visitDifferentExpr(self, ctx:ExprParser.DifferentExprContext):
-        print("## visitDifferentExpr")
+        #print("## visitDifferentExpr")
         l = list(ctx.getChildren())
         if len(l) == 3:
             a = self.visit(l[0])
@@ -159,7 +159,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#lessEqualExpr.
     def visitLessEqualExpr(self, ctx:ExprParser.LessEqualExprContext):
-        print("## visitLessEqualExpr")
+        #print("## visitLessEqualExpr")
         l = list(ctx.getChildren())
         if len(l) == 3:
             a = self.visit(l[0])
@@ -171,7 +171,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#varExpr.
     def visitVarExpr(self, ctx:ExprParser.VarExprContext):
-        print("## visitVarExpr")
+        #print("## visitVarExpr")
         varName = ctx.getText()
         if varName in self.variables[-1]:
             #print("Returning value of variable {}".format(varName))
@@ -184,7 +184,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#greaterExpr.
     def visitGreaterExpr(self, ctx:ExprParser.GreaterExprContext):
-        print("## visitGreaterExpr")
+        #print("## visitGreaterExpr")
         l = list(ctx.getChildren())
         if len(l) == 3:
             a = self.visit(l[0])
@@ -196,7 +196,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#addExpr.
     def visitAddExpr(self, ctx:ExprParser.AddExprContext):
-        print("## visitAddExpr")
+        #print("## visitAddExpr")
         l = list(ctx.getChildren())
         sumVar = 0
         #print("expr length",len(l))
@@ -211,7 +211,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#parenthesizedExpr.
     def visitParenthesizedExpr(self, ctx:ExprParser.ParenthesizedExprContext):
-        # print("visitParenthesizedExpr")
+        #print("visitParenthesizedExpr")
         l = list(ctx.getChildren())
         #print("length Parent expr:",len(l))
         if len(l) == 3:
@@ -221,7 +221,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#functionCall.
     def visitFunctionCall(self, ctx:ExprParser.FunctionCallContext):
-        print("## visitFunctionCall")
+        #print("## visitFunctionCall")
 
         l = list(ctx.getChildren())
         functionName = l[0].getText()
@@ -271,7 +271,7 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#mulExpr.
     def visitMulExpr(self, ctx:ExprParser.MulExprContext):
-        print("## visitMulExpr")
+        #print("## visitMulExpr")
         l = list(ctx.getChildren())
         mulVar = 0
         #print("expr length",len(l))
@@ -285,7 +285,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#divExpr.
     def visitDivExpr(self, ctx:ExprParser.DivExprContext):
-        print("## visitDivExpr")
+        #print("## visitDivExpr")
         l = list(ctx.getChildren())
         divVar = 0
         #print("expr length",len(l))
@@ -304,7 +304,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#powExpr.
     def visitPowExpr(self, ctx:ExprParser.PowExprContext):
-        print("## visitPowExpr")
+        #print("## visitPowExpr")
         l = list(ctx.getChildren())
         powVar = 0
         if len(l) == 3:
@@ -317,7 +317,7 @@ class Visitor(ExprVisitor):
 
     # Visit a parse tree produced by ExprParser#subExpr.
     def visitSubExpr(self, ctx:ExprParser.SubExprContext):
-        print("## visitSubExpr")
+        #print("## visitSubExpr")
         l = list(ctx.getChildren())
         difVar = 0
         if len(l) == 3:
@@ -330,13 +330,13 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#numExpr.
     def visitNumExpr(self, ctx:ExprParser.NumExprContext):
-        print("## visitNumExpr")
+        #print("## visitNumExpr")
         l = list(ctx.getChildren())
         return int(l[0].getText())
     
     # Visit a parse tree produced by ExprParser#equalExpr.
     def visitEqualExpr(self, ctx:ExprParser.EqualExprContext):
-        print("## visitEqualExpr")
+        #print("## visitEqualExpr")
         l = list(ctx.getChildren())
         if len(l) == 3:
             a = self.visit(l[0])
@@ -348,5 +348,5 @@ class Visitor(ExprVisitor):
     
     # Visit a parse tree produced by ExprParser#assign.
     def visitAssign(self, ctx:ExprParser.AssignContext):
-        print("## visitAssign")
+        #print("## visitAssign")
         return self.visitChildren(ctx)
