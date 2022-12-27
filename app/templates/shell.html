@@ -6,7 +6,35 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <h2>Try the new Funx interpreter!</h2>
-        {{ wtf.quick_form(input_form, button_map={'submit': 'primary'}) }}
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Try the new Funx interpreter!</h2>
+                <form action="" method="post">
+                    {{ wtf.quick_form(input_form, button_map={'submit': 'primary', 'reset': 'secondary'}) }}
+                </form>
+            </div>
+            <div class="col-md-8">
+                <h2>Input:</h2>
+                <div class="card" style="width: 50rem;">
+                    <ul class="list-group list-group-flush">
+                        {% for line in input_list %}
+                            <li class="list-group-item" style="background-color: rgb(139, 192, 222);">Out: {{ line }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h2>Output:</h2>
+                <div class="card" style="width: 50rem;">
+                    <ul class="list-group list-group-flush">
+                        {% for line in output_list %}
+                            {% if line == "Error: Invalid input" %}
+                                <li class="list-group-item" style="background-color: rgb(222, 139, 139);">Out: {{ line }}</li>
+                            {% else %}
+                                <li class="list-group-item" style="background-color: rgb(173, 222, 139);">Out: {{ line }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

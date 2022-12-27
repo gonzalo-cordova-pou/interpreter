@@ -1,0 +1,25 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{{ url_for('shell') }}">
+            <img alt="Brand" src="{{ url_for('static', filename='img/logo.png') }}" width="70" height="30">
+        </a>
+        <a class="navbar-brand" href="https://github.com/gonzalo-cordova-pou/interpreter">
+            <h4>Code:
+                <img src="{{ url_for('static', filename='img/github_logo.png') }}" width="30" height="30" alt="Github" />
+            </h4>
+        </a>
+        <!--Bug reports-->
+        <a class="navbar-brand" href="{{ url_for('report') }}">
+            <h4>Report a bug:
+                <img src="{{ url_for('static', filename='img/bug_logo.png') }}" width="30" height="30" alt="Bug" />
+            </h4>
+        </a>
+        <!--How to use-->
+        <a class="navbar-brand" href="https://github.com/gebakx/lp-funcions">
+            <h4>How to code with Funx:
+                <img src="{{ url_for('static', filename='img/question_mark.png') }}" width="30" height="30" alt="How to code" />
+            </h4>
+      </div>
+    </div><!-- /.container-fluid -->
+  </nav>
