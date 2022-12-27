@@ -1,3 +1,13 @@
 body {
     background-color: #0a0d2d;
 }
+
+/* Change the color of the text */
+h2 {
+    color: #f2f2f2;
+}
+
+/* Custom text in form */
+label {
+    color: #f2f2f2;
+}
