@@ -24,6 +24,11 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExprParser#parenthesizedInstruc.
+    def visitParenthesizedInstruc(self, ctx:ExprParser.ParenthesizedInstrucContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExprParser#write.
     def visitWrite(self, ctx:ExprParser.WriteContext):
         return self.visitChildren(ctx)
@@ -46,6 +51,16 @@ class ExprVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExprParser#while.
     def visitWhile(self, ctx:ExprParser.WhileContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#or.
+    def visitOr(self, ctx:ExprParser.OrContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#trueExpr.
+    def visitTrueExpr(self, ctx:ExprParser.TrueExprContext):
         return self.visitChildren(ctx)
 
 
@@ -89,6 +104,11 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExprParser#not.
+    def visitNot(self, ctx:ExprParser.NotContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExprParser#addExpr.
     def visitAddExpr(self, ctx:ExprParser.AddExprContext):
         return self.visitChildren(ctx)
@@ -96,6 +116,11 @@ class ExprVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExprParser#parenthesizedExpr.
     def visitParenthesizedExpr(self, ctx:ExprParser.ParenthesizedExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#and.
+    def visitAnd(self, ctx:ExprParser.AndContext):
         return self.visitChildren(ctx)
 
 
@@ -111,6 +136,11 @@ class ExprVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExprParser#divExpr.
     def visitDivExpr(self, ctx:ExprParser.DivExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#falseExpr.
+    def visitFalseExpr(self, ctx:ExprParser.FalseExprContext):
         return self.visitChildren(ctx)
 
 
