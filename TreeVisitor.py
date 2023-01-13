@@ -14,6 +14,23 @@ class Visitor(ExprVisitor):
         self.global_i = 0
         # self.contextStack = []
 
+        self.operations = {
+            "+": lambda a, b: a + b,
+            "-": lambda a, b: a - b,
+            "*": lambda a, b: a * b,
+            "/": lambda a, b: a / b,
+            "%": lambda a, b: a % b,
+            "^": lambda a, b: a ** b,
+            "==": lambda a, b: a == b,
+            "!=": lambda a, b: a != b,
+            ">": lambda a, b: a > b,
+            "<": lambda a, b: a < b,
+            ">=": lambda a, b: a >= b,
+            "<=": lambda a, b: a <= b,
+            "&&": lambda a, b: a and b,
+            "||": lambda a, b: a or b,
+        }
+
     def visitRoot(self, ctx:ExprParser.RootContext):
         #print("## visitRoot")
         l = list(ctx.getChildren())
@@ -141,9 +158,10 @@ class Visitor(ExprVisitor):
             raise Exception(error_mg)
 
     # Visit a parse tree produced by ExprParser#trueExpr.
-    def visitTrueExpr(self, ctx:ExprParser.TrueExprContext):
-        return True
-
+    def visitBool(self, ctx:ExprParser.BoolContext):
+        l = list(ctx.getChildren())
+        return l[0].getText() == "true"
+    
     # Visit a parse tree produced by ExprParser#lessExpr.
     def visitLessExpr(self, ctx:ExprParser.LessExprContext):
         #print("## visitLessExpr")
@@ -234,16 +252,15 @@ class Visitor(ExprVisitor):
     def visitAddExpr(self, ctx:ExprParser.AddExprContext):
         #print("## visitAddExpr")
         l = list(ctx.getChildren())
-        sumVar = 0
         #print("expr length",len(l))
         if len(l) == 3:
             a = self.visit(l[0])
             b = self.visit(l[2])
-            sumVar = a+b
-        else:
-            print("Error evaluating sum expression!")
+            return a+b
+
+        print("Error evaluating sum expression!")
         #print("sum",sumVar)
-        return sumVar
+        return False
 
     # Visit a parse tree produced by ExprParser#parenthesizedExpr.
     def visitParenthesizedExpr(self, ctx:ExprParser.ParenthesizedExprContext):
@@ -351,10 +368,6 @@ class Visitor(ExprVisitor):
             print("Error evaluating division expression!")
         return divVar
 
-    # Visit a parse tree produced by ExprParser#falseExpr.
-    def visitFalseExpr(self, ctx:ExprParser.FalseExprContext):
-        return False
-
     # Visit a parse tree produced by ExprParser#powExpr.
     def visitPowExpr(self, ctx:ExprParser.PowExprContext):
         #print("## visitPowExpr")
@@ -403,3 +416,12 @@ class Visitor(ExprVisitor):
     def visitAssign(self, ctx:ExprParser.AssignContext):
         #print("## visitAssign")
         return self.visitChildren(ctx)
+    
+    def visitOperator(self, ctx:ExprParser.OperatorContext):
+        l = list(ctx.getChildren())
+        if len(l) == 3:
+            a = self.visit(l[0])
+            symbol = l[1].getText()
+            operation  = self.operations[symbol]
+            b = self.visit(l[2])
+            return operation(a,b)
