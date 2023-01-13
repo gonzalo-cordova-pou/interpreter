@@ -54,63 +54,18 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#or.
-    def visitOr(self, ctx:ExprParser.OrContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#trueExpr.
-    def visitTrueExpr(self, ctx:ExprParser.TrueExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#lessExpr.
-    def visitLessExpr(self, ctx:ExprParser.LessExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#subExpr.
-    def visitSubExpr(self, ctx:ExprParser.SubExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#greaterEqualExpr.
-    def visitGreaterEqualExpr(self, ctx:ExprParser.GreaterEqualExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#numExpr.
-    def visitNumExpr(self, ctx:ExprParser.NumExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#differentExpr.
-    def visitDifferentExpr(self, ctx:ExprParser.DifferentExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#lessEqualExpr.
-    def visitLessEqualExpr(self, ctx:ExprParser.LessEqualExprContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExprParser#varExpr.
     def visitVarExpr(self, ctx:ExprParser.VarExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#greaterExpr.
-    def visitGreaterExpr(self, ctx:ExprParser.GreaterExprContext):
+    # Visit a parse tree produced by ExprParser#notExpr.
+    def visitNotExpr(self, ctx:ExprParser.NotExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#not.
-    def visitNot(self, ctx:ExprParser.NotContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#addExpr.
-    def visitAddExpr(self, ctx:ExprParser.AddExprContext):
+    # Visit a parse tree produced by ExprParser#sumExpr.
+    def visitSumExpr(self, ctx:ExprParser.SumExprContext):
         return self.visitChildren(ctx)
 
 
@@ -119,13 +74,13 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#and.
-    def visitAnd(self, ctx:ExprParser.AndContext):
+    # Visit a parse tree produced by ExprParser#functionCall.
+    def visitFunctionCall(self, ctx:ExprParser.FunctionCallContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#functionCall.
-    def visitFunctionCall(self, ctx:ExprParser.FunctionCallContext):
+    # Visit a parse tree produced by ExprParser#logicExpr.
+    def visitLogicExpr(self, ctx:ExprParser.LogicExprContext):
         return self.visitChildren(ctx)
 
 
@@ -134,13 +89,8 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#divExpr.
-    def visitDivExpr(self, ctx:ExprParser.DivExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExprParser#falseExpr.
-    def visitFalseExpr(self, ctx:ExprParser.FalseExprContext):
+    # Visit a parse tree produced by ExprParser#boolExpr.
+    def visitBoolExpr(self, ctx:ExprParser.BoolExprContext):
         return self.visitChildren(ctx)
 
 
@@ -149,13 +99,13 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#equalExpr.
-    def visitEqualExpr(self, ctx:ExprParser.EqualExprContext):
+    # Visit a parse tree produced by ExprParser#relationalExpr.
+    def visitRelationalExpr(self, ctx:ExprParser.RelationalExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExprParser#assign.
-    def visitAssign(self, ctx:ExprParser.AssignContext):
+    # Visit a parse tree produced by ExprParser#numExpr.
+    def visitNumExpr(self, ctx:ExprParser.NumExprContext):
         return self.visitChildren(ctx)
 
 
