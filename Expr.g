@@ -1,4 +1,5 @@
 grammar Expr;
+
 root : declareFunction* expr? EOF ;
 
 declareFunction : ID_FUNCTION ID* '{' block '}' ;
@@ -15,30 +16,27 @@ instruc : '(' instruc ')'                          # parenthesizedInstruc
 
 expr : '(' expr ')'                                # parenthesizedExpr
     | ID_FUNCTION expr*                            # functionCall
-    | binaryOperation                              # binaryExpr
-    | 'not' expr                                   # not
-    | 'true' | 'false'                             # bool
+    | <assoc=right> expr POW expr                  # powExpr
+    | expr MUL expr                                # mulExpr
+    | expr SUM expr                                # sumExpr
+    | expr REL expr                                # relationalExpr
+    | expr LOGIC expr                              # logicExpr
+    | NOT expr                                     # notExpr
+    | BOOL                                         # boolExpr
     | NUM                                          # numExpr
     | ID                                           # varExpr
     ;
 
-// binary operations
-binaryOperation : expr '+' expr
-    | expr '-' expr
-    | <assoc=right> expr '*' expr
-    | expr '^' expr
-    | expr '=' expr
-    | expr '!=' expr
-    | expr '<' expr
-    | expr '>' expr
-    | expr '<=' expr
-    | expr '>=' expr
-    | expr 'and' expr
-    | expr 'or' expr
-    | expr '/' expr
-    ;
+POW : '^' ;                                        // Priority 1 binary operators
+MUL : '*' | '/' | '%' ;                            // Priority 2 binary operators
+SUM : '+' | '-' ;                                  // Priority 3 binary operators
+REL : '<' | '>' | '<=' | '>=' | '==' | '!=' ;      // Priority 4 binary operators
+LOGIC : 'and' | 'or' | 'xor' | '&&' | '||' ;       // Priority 5 binary operators
 
-ID : [a-z][a-zA-Z0-9_]* ;
-ID_FUNCTION : [A-Z][a-zA-Z0-9_]* ;
-NUM : [0-9]+ ;
-WS : [ \n]+ -> skip ;
+NOT : 'not' | '!' ;                                // Unary operator
+BOOL : 'true' | 'false' ;                          // Boolean literals
+
+ID : [a-z][a-zA-Z0-9_]* ;                          // Variable names
+ID_FUNCTION : [A-Z][a-zA-Z0-9_]* ;                 // Function names
+NUM : [0-9]+ ;                                     // Numbers
+WS : [ \n]+ -> skip ;                              // Whitespace
