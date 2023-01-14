@@ -36,16 +36,16 @@ def serializedATN():
         67,45,1,0,0,0,67,51,1,0,0,0,67,61,1,0,0,0,68,7,1,0,0,0,69,70,6,4,
         -1,0,70,71,5,3,0,0,71,72,3,8,4,0,72,73,5,4,0,0,73,87,1,0,0,0,74,
         78,5,17,0,0,75,77,3,8,4,0,76,75,1,0,0,0,77,80,1,0,0,0,78,76,1,0,
-        0,0,78,79,1,0,0,0,79,87,1,0,0,0,80,78,1,0,0,0,81,82,5,9,0,0,82,87,
-        3,8,4,4,83,87,5,15,0,0,84,87,5,18,0,0,85,87,5,16,0,0,86,69,1,0,0,
-        0,86,74,1,0,0,0,86,81,1,0,0,0,86,83,1,0,0,0,86,84,1,0,0,0,86,85,
-        1,0,0,0,87,105,1,0,0,0,88,89,10,9,0,0,89,90,5,10,0,0,90,104,3,8,
-        4,9,91,92,10,8,0,0,92,93,5,11,0,0,93,104,3,8,4,9,94,95,10,7,0,0,
-        95,96,5,12,0,0,96,104,3,8,4,8,97,98,10,6,0,0,98,99,5,13,0,0,99,104,
-        3,8,4,7,100,101,10,5,0,0,101,102,5,14,0,0,102,104,3,8,4,6,103,88,
-        1,0,0,0,103,91,1,0,0,0,103,94,1,0,0,0,103,97,1,0,0,0,103,100,1,0,
-        0,0,104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,106,9,1,0,0,
-        0,107,105,1,0,0,0,9,13,17,25,35,67,78,86,103,105
+        0,0,78,79,1,0,0,0,79,87,1,0,0,0,80,78,1,0,0,0,81,82,5,14,0,0,82,
+        87,3,8,4,4,83,87,5,15,0,0,84,87,5,18,0,0,85,87,5,16,0,0,86,69,1,
+        0,0,0,86,74,1,0,0,0,86,81,1,0,0,0,86,83,1,0,0,0,86,84,1,0,0,0,86,
+        85,1,0,0,0,87,105,1,0,0,0,88,89,10,9,0,0,89,90,5,9,0,0,90,104,3,
+        8,4,9,91,92,10,8,0,0,92,93,5,10,0,0,93,104,3,8,4,9,94,95,10,7,0,
+        0,95,96,5,11,0,0,96,104,3,8,4,8,97,98,10,6,0,0,98,99,5,12,0,0,99,
+        104,3,8,4,7,100,101,10,5,0,0,101,102,5,13,0,0,102,104,3,8,4,6,103,
+        88,1,0,0,0,103,91,1,0,0,0,103,94,1,0,0,0,103,97,1,0,0,0,103,100,
+        1,0,0,0,104,107,1,0,0,0,105,103,1,0,0,0,105,106,1,0,0,0,106,9,1,
+        0,0,0,107,105,1,0,0,0,9,13,17,25,35,67,78,86,103,105
     ]
 
 class ExprParser ( Parser ):
@@ -59,12 +59,12 @@ class ExprParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     literalNames = [ "<INVALID>", "'{'", "'}'", "'('", "')'", "'<-'", "'if'", 
-                     "'else'", "'while'", "'not'", "'^'" ]
+                     "'else'", "'while'", "'^'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "POW", "MUL", "SUM", "REL", 
-                      "LOGIC", "BOOL", "ID", "ID_FUNCTION", "NUM", "WS" ]
+                      "<INVALID>", "POW", "MUL", "SUM", "REL", "LOGIC", 
+                      "NOT", "BOOL", "ID", "ID_FUNCTION", "NUM", "WS" ]
 
     RULE_root = 0
     RULE_declareFunction = 1
@@ -83,12 +83,12 @@ class ExprParser ( Parser ):
     T__5=6
     T__6=7
     T__7=8
-    T__8=9
-    POW=10
-    MUL=11
-    SUM=12
-    REL=13
-    LOGIC=14
+    POW=9
+    MUL=10
+    SUM=11
+    REL=12
+    LOGIC=13
+    NOT=14
     BOOL=15
     ID=16
     ID_FUNCTION=17
@@ -158,7 +158,7 @@ class ExprParser ( Parser ):
             self.state = 17
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if ((_la) & ~0x3f) == 0 and ((1 << _la) & 492040) != 0:
+            if ((_la) & ~0x3f) == 0 and ((1 << _la) & 507912) != 0:
                 self.state = 16
                 self.expr(0)
 
@@ -282,7 +282,7 @@ class ExprParser ( Parser ):
                 self.state = 35 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (((_la) & ~0x3f) == 0 and ((1 << _la) & 492360) != 0):
+                if not (((_la) & ~0x3f) == 0 and ((1 << _la) & 508232) != 0):
                     break
 
         except RecognitionException as re:
@@ -566,6 +566,8 @@ class ExprParser ( Parser ):
             super().__init__(parser)
             self.copyFrom(ctx)
 
+        def NOT(self):
+            return self.getToken(ExprParser.NOT, 0)
         def expr(self):
             return self.getTypedRuleContext(ExprParser.ExprContext,0)
 
@@ -801,12 +803,12 @@ class ExprParser ( Parser ):
                     _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
 
                 pass
-            elif token in [9]:
+            elif token in [14]:
                 localctx = ExprParser.NotExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 81
-                self.match(ExprParser.T__8)
+                self.match(ExprParser.NOT)
                 self.state = 82
                 self.expr(4)
                 pass
