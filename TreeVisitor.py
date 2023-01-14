@@ -5,15 +5,15 @@ else:
     from ExprParser import ExprParser
     from ExprVisitor import ExprVisitor
 
+class VisitorError():
+    def __init__(self, msg):
+        self.msg = msg
+
 class Visitor(ExprVisitor):
 
     def __init__(self):
-        self.nivell = 0
         self.variables = [] # Stack of dictionaries
         self.func_dict = {}
-        self.global_i = 0
-        # self.contextStack = []
-
         self.operations = {
             "+": lambda a, b: a + b,
             "-": lambda a, b: a - b,
@@ -31,14 +31,16 @@ class Visitor(ExprVisitor):
             "||": lambda a, b: a or b,
             "or": lambda a, b: a or b,
         }
+    
+    def reset(self):
+        self.variables = []
+        self.func_dict = {}
 
     def visitRoot(self, ctx:ExprParser.RootContext):
-        #print("## visitRoot")
         l = list(ctx.getChildren())
         return self.visit(l[0])
 
     def visitDeclareFunction(self, ctx:ExprParser.DeclareFunctionContext):
-        #print("## visitDeclareFunction")
         l = list(ctx.getChildren())
         functionName = l[0].getText()
         parametersList = []
@@ -49,94 +51,78 @@ class Visitor(ExprVisitor):
         
         instrucBlock = l[i+1]
 
-        #print("instrucBlock: {}".format(instrucBlock.getText()))
-
         if functionName in self.func_dict:
-            errorMsg = "Procedure with name '{}' already defined"
-            raise Exception(errorMsg.format(functionName))
-        
+            errorMsg = "Function with name '{}' already defined"
+            return VisitorError(errorMsg.format(functionName))
+
         parametersSet = set(parametersList)
         if not(len(parametersList) == len(parametersSet)):
             errorMsg = "Some parameters in function '{}' have the same name"
-            raise Exception(errorMsg.format(functionName))
+            return VisitorError(errorMsg.format(functionName))
 
         self.func_dict[functionName] = (parametersList, instrucBlock)
 
     def visitBlock(self, ctx:ExprParser.BlockContext):
         """Visit a block of instructions. Stop when a value is returned."""
-        #print("## visitBlock")
-
-        self.global_i += 1
-        #print("Block {}: {}".format(self.global_i, ctx.getText()))
         l = list(ctx.getChildren())
         ret = None
         i = 0
         n = len(l)
         while i < n and ret is None:
-            #print("Block {}: instruction {}, code: {}".format(self.global_i, i, l[i].getText()))
             ret = self.visit(l[i])
             i += 1
-        #print("FINISHED Block {}: returning {}".format(self.global_i, ret))
-        self.global_i -= 1
         return ret
 
     def visitBinaryExpr(self, ctx):
-        l = list(ctx.getChildren())
-        if len(l) == 3:
-            a = self.visit(l[0])
-            b = self.visit(l[2])
-            symbol = l[1].getText()
-            return int(self.operations[symbol](a, b))
-        raise Exception("Error evaluating binary expression!")
-    
+        try:
+            l = list(ctx.getChildren())
+            if len(l) == 3:
+                a = self.visit(l[0])
+                b = self.visit(l[2])
+                symbol = l[1].getText()
+                return int(self.operations[symbol](a, b))
+        except Exception as e:
+            return VisitorError("Error evaluating binary expression: " + str(e))
+
     def visitParenthesizedInstruc(self, ctx:ExprParser.ParenthesizedInstrucContext):
-        #print("## visitParenthesizedInstruc")
-        l = list(ctx.getChildren())
-        if len(l) == 3:
-            return self.visit(l[1])
-        else:
-            error = "Parenthesized instruction with wrong number of children"
-            raise Exception(error)
+        try:
+            l = list(ctx.getChildren())
+            if len(l) == 3:
+                return self.visit(l[1])
+        except Exception as e:
+            error = "Error in parenthesized instruction: " + str(e)
+            return VisitorError(error)
+        return VisitorError("Error in parenthesized instruction")
 
     def visitWrite(self, ctx:ExprParser.WriteContext):
-        #print("## visitWrite")
         l = list(ctx.getChildren())
         ret = self.visit(l[0])
-        #print("Write: {}".format(ret))
         if ret is not None:
             return ret
 
     def visitAssignation(self, ctx:ExprParser.AssignationContext):
-        #print("## visitAssignation")
         l = list(ctx.getChildren())
         varName = l[0].getText()
         varValue = self.visit(l[2])
         self.variables[-1][varName] = varValue
 
     def visitIf(self, ctx:ExprParser.IfContext):
-        #print("## visitIf")
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         if condition:
             return self.visit(l[3])
 
     def visitIfElse(self, ctx:ExprParser.IfElseContext):
-        #print("## visitIfElse")
         l = list(ctx.getChildren())
-        #print("Checking if {} is true".format(l[1].getText()))
         condition = self.visit(l[1])
         if condition:
-            #print("Condition is true, visiting {}".format(l[3].getText()))
             ret = self.visit(l[3])
         else:
-            #print("Condition is false, visiting {}".format(l[7].getText()))
             ret = self.visit(l[7])
-        
         if ret is not None:
             return ret
 
     def visitWhile(self, ctx:ExprParser.WhileContext):
-        #print("## visitWhile")
         l = list(ctx.getChildren())
         condition = self.visit(l[1])
         while condition:
@@ -147,64 +133,54 @@ class Visitor(ExprVisitor):
         return
 
     def visitVarExpr(self, ctx:ExprParser.VarExprContext):
-        #print("## visitVarExpr")
         varName = ctx.getText()
         if varName in self.variables[-1]:
-            #print("Returning value of variable {}".format(varName))
             return self.variables[-1][varName]
         else:
-            #print("All current variables: {}".format(self.variables))
-            #print("Current variables: {}".format(self.variables[-1]))
             errorMsg = "Error, variable {} not defined!"
-            raise Exception(errorMsg.format(varName))
+            return VisitorError(errorMsg.format(varName))
 
     def visitNotExpr(self, ctx:ExprParser.NotExprContext):
-        #print("## visitNot")
         l = list(ctx.getChildren())
         if len(l) == 2:
             a = self.visit(l[1])
-            #print("Checking if not {}".format(a))
             return not a
-        else:
-            error_mg =  "Error evaluating not expression!"
-            raise Exception(error_mg)
+        error_mg =  "Error evaluating not expression!"
+        return VisitorError(error_mg)
 
     def visitSumExpr(self, ctx:ExprParser.SumExprContext):
         return self.visitBinaryExpr(ctx)
 
     def visitParenthesizedExpr(self, ctx:ExprParser.ParenthesizedExprContext):
-        #print("visitParenthesizedExpr")
         l = list(ctx.getChildren())
-        #print("length Parent expr:",len(l))
         if len(l) == 3:
             return self.visit(l[1])
         else:
-            print("Error in parenthesized expression")
+            return VisitorError("Parenthesized expression with wrong number of children")
 
     def visitFunctionCall(self, ctx:ExprParser.FunctionCallContext):
         l = list(ctx.getChildren())
         functionName = l[0].getText()
-
-        # assign the given values to the function variables
         values = []
         try:
             param_count = len(self.func_dict[functionName][0])
         except:
-            raise Exception("Function '{}' not defined".format(functionName))
+            return VisitorError("Function '{}' not defined".format(functionName))
         for i in range(1, 1+param_count):
             values.append(self.visit(l[i]))
         parametersList, instrucBlock = self.func_dict[functionName]
+        if len(values) != param_count:
+            errorMsg = "Wrong number of parameters in function '{}', expected {}, but {} were given"
+            return VisitorError(errorMsg.format(functionName, param_count, len(values)))
         d ={}
         for i in range(param_count):
             d[parametersList[i]] = values[i]
-
         # add the new variables to the stack
         self.variables.append(d)
         # visit the instructions block
         ret = self.visit(instrucBlock)
         # remove the variables from the stack
         self.variables.pop()
-        
         return ret
 
     def visitLogicExpr(self, ctx:ExprParser.LogicExprContext):
@@ -224,6 +200,5 @@ class Visitor(ExprVisitor):
         return self.visitBinaryExpr(ctx)
 
     def visitNumExpr(self, ctx:ExprParser.NumExprContext):
-        #print("## visitNumExpr")
         l = list(ctx.getChildren())
         return int(l[0].getText())
