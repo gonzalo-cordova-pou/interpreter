@@ -34,6 +34,8 @@ set FLASK_ENV=development
 flask run
 ```
 
+![Web page](./img/funx_example.png)
+
 You can run the interpreter in the command line by running the command:
 
 ```{bash}
@@ -98,7 +100,7 @@ ___
 
 **Binary operators evaluation**
 
-*Note: The binary operators ould not be visited in a single function because, to avoid ambiguity, the grammar of the language has been defined in a way that the binary operators are visited in a different function for each category of operators classified by their precedence.*
+*Note: The binary operators could not be visited in a single function because, to avoid ambiguity, the grammar of the language has been defined in a way that the binary operators are visited in a different function for each category of operators classified by their precedence.*
 
 The presence of lambda functions in Python, allows the evaluation of binary operators to be done in a simple way.The visitor has a dictionary with the binary operators and their corresponding lambda function. The visitor uses this dictionary to evaluate the binary operators.
 
@@ -128,3 +130,73 @@ def visitBinaryExpr(self, ctx):
 
 The `int()` function is used to convert the result of the lambda function to an integer. This is necessary because relational should return an integer value (0 or 1).
 ___
+
+**Error handling**
+
+A class has been created to handle the errors that may occur during the execution of the interpreter. This class is called VisitorError and is defined in the [VisitorError.py](./VisitorError.py) file. This is the implementation of the class:
+
+```{python}
+class VisitorError():
+    def __init__(self, msg):
+        self.msg = msg
+```
+
+The class has a single attribute, `msg`, which is the error message. To avoid raising Python exceptions and to propagate an informative message, the visitor will return an instance of the VisitorError class when an error occurs. The interpreter will check if the result of the visit is an instance of the VisitorError class and, if so, it will print the error message.
+
+```{python}
+ret = visitor.visit(tree)
+if ret is not None:
+     if isinstance(ret, VisitorError):
+          print(ret.msg)
+     else:
+          print(ret)
+```
+
+Python errors are also used by capturing them with the `try` and `except` statements. For example, when evaluating a division by zero, the interpreter will catch the error and return an instance of the VisitorError class.
+
+```{python}
+except Exception as e:
+            return VisitorError("Error evaluating binary expression: " + str(e))
+```
+
+With this implementation, all the Python errors that may occur during the binary operator evaluation are handled:
+
+![Error message](./img/error_example2.png)
+
+This allows also to the web page to show the error message in this way:
+
+![Error message](./img/error_example.png)
+
+These are all the errors taken into account in the interpreter:
+
+- **visitDeclareFunction**:
+     - Function name already exists.
+     - Parameter names are repeated.
+- **visitBinaryExpr**:
+     - All the Python errors that may occur during the binary operator evaluation. For example:
+          - Division by zero.
+          - Type error.
+- **visitVariableExpr**:
+     - Variable name does not exist.
+- **visitFunctionCall**:
+     - Function name does not exist.
+     - Number of arguments is different from the number of parameters.
+
+
+# Web page
+
+The web page is implemented with Flask. These are the different pages of the web page:
+
+___
+
+**Home page (interpreter)**
+
+The home page is the interpreter. The user can write the code in the text area and execute it by clicking the `Run` button.
+
+The results of the execution are shown in the `Output` text area.
+
+The button `Clear` clears the previous code and output.
+
+The button `Reset` clears the previous code and output and resets the functions.
+
+![Web page](./img/funx_example.png)
