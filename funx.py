@@ -1,7 +1,7 @@
 from antlr4 import *
-from ExprLexer import ExprLexer
-from ExprParser import ExprParser
-from TreeVisitor import Visitor, VisitorError
+from funxLexer import funxLexer
+from funxParser import funxParser
+from visitor import Visitor, VisitorError
 from app import create_app
 from flask import render_template as render
 from flask import redirect, request
@@ -12,27 +12,24 @@ def start_funx():
     visitor = Visitor()
     return visitor
 
-# Start the interpreter
-visitor = start_funx()
-
-app = create_app()
-
-display = []
+visitor = start_funx()  # Start the interpreter
+app = create_app()      # Create the flask app
+display = []            # This list will be used to store the code and output history
 
 def run_funx(code):
     input_stream = InputStream(code)
-    lexer = ExprLexer(input_stream)
+    lexer = funxLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
-    parser = ExprParser(token_stream)
+    parser = funxParser(token_stream)
     tree = parser.root()
     ret = visitor.visit(tree)
     if ret is not None:
         return ret
 
 @app.route('/', methods=['GET', 'POST'])
-def shell():
+def main():
     """
-    This page is the shell for the interpreter.
+    This is the main page the main page of the interpreter.
     It will be used to recieve the user's input and display the output when run button is clicked.
     When reset button is clicked, the input and output will be cleared.
     The form should be cleared when submit button is clicked.
@@ -72,7 +69,7 @@ def shell():
         'functions': functions
     }
 
-    return render('shell.html', **context)
+    return render('main.html', **context)
 
 @app.route('/report')
 def report():
