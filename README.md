@@ -376,8 +376,6 @@ Some cool features of the interpreter are:
 
 # Tests
 
-![Web page](./img/funx_example.png)
-
 Two `.funx` files have been created to test the interpreter. These files are:
 - [test-basic.funx](./test-basic.funx): It contains basic tests included in the task description.
 - [test-new.funx](./test-new.funx): It contains new tests that are not included in the task description to test new features.
