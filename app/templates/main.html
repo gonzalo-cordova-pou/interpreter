@@ -25,14 +25,14 @@
             </div>
             <div class="col-md-8">
                 <div style="display: inline-block">
-                    <h2>Shell:</h2>
+                    <h2>Results:</h2>
                 </div>
                 <div style="display: inline-block">
                     <form style="margin:5px" action="" method="post">
                     <button class="btn btn-primary" type="submit" name="reset" value="reset" onclick="confirm_click()">Reset</button>
                     <script>
                         function confirm_click() {
-                            confirm("Confirm that you want to reset the shell deleting all the declared functions and code / output history.");
+                            confirm("Confirm that you want to reset the console deleting all the declared functions and code / output history.");
                         }
                     </script>
                     </form>
@@ -46,9 +46,9 @@
                     <ul class="list-group list-group-flush">
                         {% for line in display %}
                             {% if line.type == 'input' %}
-                                <li class="list-group-item" style="background-color: rgb(139, 192, 222);">>> {{ line.code }}</li>
+                                <li class="list-group-item" style="background-color: rgb(139, 192, 222);">>>> {{ line.code }}</li>
                             {% elif line.type == 'output' %}
-                                <li class="list-group-item" style="background-color: rgb(139, 192, 222);">{{ line.code }}</li>
+                                <li class="list-group-item" style="background-color: rgb(185, 187, 187);">{{ line.code }}</li>
                             {% elif line.type == 'error' %}
                                 <li class="list-group-item" style="background-color: rgb(239, 127, 127);">Error: {{ line.code }}</li>
                             {% endif %}
