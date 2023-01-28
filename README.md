@@ -9,7 +9,7 @@
                                      |__|/ \|__|    By Gonzalo Córdova
 # Interpreter
 
-This page describes the GEI-LP task (edition 2022-2023 Q1). Our task was to implement an interpreter for a programming language based on expressions and functions. The input and output of this interpreter will be through a web page, although a command line interface is also provided. The description of the task (Funx spec) can be found [here](https://github.com/gebakx/lp-funcions).
+This is the project corresponding to the GEI-LP task (edition 2022-2023 Q1) at the Polytechnic University of Catalonia. Our task was to implement an interpreter for a programming language based on expressions and functions. The input and output of this interpreter will be through a web interface, although a command line interface is also provided. The description of the task (Funx spec) can be found [here](https://github.com/gebakx/lp-funcions).
 
 # Contents
 
