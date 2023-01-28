@@ -1,9 +1,10 @@
+from antlr4 import *
 if __name__ is not None and "." in __name__:
-    from .ExprParser import ExprParser
-    from .ExprVisitor import ExprVisitor
+    from .funxParser import funxParser
+    from .funxVisitor import funxVisitor
 else:
-    from ExprParser import ExprParser
-    from ExprVisitor import ExprVisitor
+    from funxParser import funxParser
+    from funxVisitor import funxVisitor
 
 class VisitorError():
     def __init__(self, msg):
@@ -75,7 +76,6 @@ class Visitor(ParseTreeVisitor):
         return ret
 
     def visitDeclareFunction(self, ctx: funxParser.DeclareFunctionContext):
-        print("Declare function")
         children = list(ctx.getChildren())
         functionName = children[0].getText()
         parametersList = []
