@@ -1,0 +1,49 @@
+
+/*
+These are the examples included in the task description:
+https://github.com/gebakx/lp-funcions
+*/
+
+###############  FUNCTION DEFINITION  ###############
+
+# funció que rep dos nombres enters i en torna la seva suma
+Suma x y
+{
+  x + y
+}
+
+Fibo n
+{
+    if n < 2 { n }
+    (Fibo n-1) + (Fibo n-2)
+}
+
+# funció que rep dos enters i en torna el seu maxim comu divisor
+Euclides a b
+{
+  while a != b
+  {
+    if a > b 
+    {
+      a <- a - b
+    }
+    else
+    {
+      b <- b - a
+    }
+  }
+  a
+}
+
+DOS { 2 }
+
+Suma2 x { DOS + x }
+
+
+################# TEST EXECUTION ##################
+
+3 + 4 * 2 # Out: 11
+Suma (2 * 3) 4 # Out: 10
+Fibo 4 # Out: 3
+Euclides 6 8 # Out: 2
+Suma2 3 # Out: 5

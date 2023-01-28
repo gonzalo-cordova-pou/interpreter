@@ -1,0 +1,79 @@
+/*
+TESTS
+- Not : tests conditional expressions and bool values
+- Modexp : tests if-else, if-else-if, and modular arithmetic
+- GCD : tests recursion, modular arithmetic and if-else
+*/
+
+###############  FUNCTION DEFINITION  ###############
+
+
+# Not function equivalent to ! and not
+Not x { if x { false } else { true } }
+
+
+# Modular exponentiation (P29212 in Jutge.org): n^k mod m 
+Modexp n k m {
+    if k = 0 { 1 } 
+    else {
+        if k % 2 = 0 {
+            ((Modexp n (k/2) m)^2)%m 
+        } else {
+            ((((Modexp n (k/2)  m)^2)%m)*n)%m
+        }
+    }
+}
+
+# Greatest common divisor
+GCD x y {
+    if (y = 0) {
+        x
+    } else {
+        GCD y (x % y)
+    }
+}
+
+SumDigits n {
+    s <- 0
+    while n != 0 {
+        s <- s + n % 10
+        n <- n / 10
+    }
+    s
+}
+
+IsPrime n {
+    if n <= 1  { false }
+    i <- 2
+    while i*i <= n {
+        if n % i = 0 { false }
+        i <- i + 1
+    }
+    true
+}
+
+################# TEST EXECUTION ##################
+
+not 0
+not 1
+not true
+not false
+
+Modexp 2 10 10000  # 1024
+Modexp 2 10 2  # 0
+Modexp 7 1000000 29999  # 7959
+Modexp 7 1000000 30000  # 1
+Modexp 30000 1000000000 29876 # 5336
+
+GCD 16104 3216  # 24
+GCD 1107 15129  # 369
+
+SumDigits 29  #  11
+SumDigits 7  # 7
+SumDigits 0  # 0
+SumDigits 123456789  # 45
+
+IsPrime 977  # 1
+IsPrime 978  # 0
+IsPrime 0  # 0
+IsPrime 11 # 1
