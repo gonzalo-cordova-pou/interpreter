@@ -1,7 +1,7 @@
 from antlr4 import *
-from ExprLexer import ExprLexer
-from ExprParser import ExprParser
-from TreeVisitor import Visitor, VisitorError
+from funxLexer import funxLexer
+from funxParser import funxParser
+from visitor import Visitor, VisitorError
 
 # Welcome message
 print(" ________ ___  ___  ________      ___    ___ \n|\\  _____\\\\  \\|\\  \\|\\   ___  \\   |\\  \\  /  /|\n\\ \\  \\__/\\ \\  \\\\\\  \\ \\  \\\\ \\  \\  \\ \\  \\/  / /\n \\ \\   __\\\\ \\  \\\\\\  \\ \\  \\\\ \\  \\  \\ \\    / / \n  \\ \\  \\_| \\ \\  \\\\\\  \\ \\  \\\\ \\  \\  /     \\/  \n   \\ \\__\\   \\ \\_______\\ \\__\\\\ \\__\\/  /\\   \\  \n    \\|__|    \\|_______|\\|__| \\|__/__/ /\\ __\\ \n                                 |__|/ \\|__|")
@@ -12,9 +12,9 @@ print("Start coding:\n")
 visitor = Visitor()
 while True:
     input_stream = InputStream(input('? '))
-    lexer = ExprLexer(input_stream)
+    lexer = funxLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
-    parser = ExprParser(token_stream)
+    parser = funxParser(token_stream)
     tree = parser.root()
     # print(tree.toStringTree(recog=parser))
     ret = visitor.visit(tree)
